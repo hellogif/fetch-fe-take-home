@@ -2,6 +2,7 @@
 
 import { Dispatch, SetStateAction, useState } from "react";
 import { UserContextType } from "../page";
+import styles from "./styles.module.scss";
 
 interface LoginFormType {
   setUser: Dispatch<SetStateAction<UserContextType>>;
@@ -60,32 +61,46 @@ const LoginForm = ({ setUser }: LoginFormType) => {
   if (error) <div>Error: {error}</div>;
 
   return (
-    <form action={login}>
-      <label htmlFor="firstName">First Name</label>
-      <input
-        id="firstName"
-        name="firstName"
-        type="text"
-        value={firstName}
-        onChange={(evt) => setFirstName(evt.target.value)}
-      />
-      <label htmlFor="lastName">Last Name</label>
-      <input
-        id="lastName"
-        name="lastName"
-        type="text"
-        value={lastName}
-        onChange={(evt) => setLastName(evt.target.value)}
-      />
-      <label htmlFor="email">Email</label>
-      <input
-        id="email"
-        name="email"
-        type="email"
-        value={email}
-        onChange={(evt) => setEmail(evt.target.value)}
-      />
-      <button type="submit">LOGIN</button>
+    <form action={login} className={styles.form}>
+      <label htmlFor="firstName" className={styles.label}>
+        First Name
+        <input
+          id="firstName"
+          name="firstName"
+          className={styles.input}
+          type="text"
+          value={firstName}
+          onChange={(evt) => setFirstName(evt.target.value)}
+        />
+      </label>
+
+      <label htmlFor="lastName" className={styles.label}>
+        Last Name
+        <input
+          id="lastName"
+          name="lastName"
+          className={styles.input}
+          type="text"
+          value={lastName}
+          onChange={(evt) => setLastName(evt.target.value)}
+        />
+      </label>
+
+      <label htmlFor="email" className={styles.label}>
+        Email
+        <input
+          id="email"
+          name="email"
+          className={styles.input}
+          type="email"
+          value={email}
+          onChange={(evt) => setEmail(evt.target.value)}
+        />
+      </label>
+
+      <button type="submit" className={styles.button}>
+        LOGIN
+      </button>
     </form>
   );
 };

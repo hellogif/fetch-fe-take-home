@@ -17,10 +17,6 @@ const UserContext = React.createContext<UserContextType>({
 
 export default function App() {
   const [user, setUser] = useState({} as UserContextType);
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
-  // const user = useContext(UserContext);
 
   return (
     <UserContext.Provider
