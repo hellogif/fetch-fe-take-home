@@ -3,25 +3,39 @@
 import React, { useState } from "react";
 import LoginForm from "./login/page";
 
-interface UserContextType {
-  cookie: string | null;
+export interface UserContextType {
+  firstName: FormDataEntryValue;
+  lastName: FormDataEntryValue;
+  email: FormDataEntryValue;
 }
 
-const UserContext = React.createContext<UserContextType>({ cookie: null });
+const UserContext = React.createContext<UserContextType>({
+  firstName: "",
+  lastName: "",
+  email: "",
+});
 
 export default function App() {
-  const [cookie, setCookie] = useState<string | null>(null);
+  const [user, setUser] = useState({} as UserContextType);
   // if (loading) {
   //   return <div>Loading...</div>;
   // }
   // const user = useContext(UserContext);
 
-  console.log(cookie);
-
   return (
-    <UserContext.Provider value={{ cookie }}>
+    <UserContext.Provider
+      value={{
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+      }}
+    >
       <div>
-        <LoginForm setCookie={setCookie} />
+        {user.firstName && user.lastName && user.email ? (
+          <div>hello</div>
+        ) : (
+          <LoginForm setUser={setUser} />
+        )}
       </div>
     </UserContext.Provider>
   );

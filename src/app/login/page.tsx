@@ -1,17 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
+import { UserContextType } from "../page";
 
 interface LoginFormType {
-  setCookie: (cookie: string | null) => void;
+  setUser: Dispatch<SetStateAction<UserContextType>>;
 }
 
-const LoginForm = ({ setCookie }: LoginFormType) => {
+const LoginForm = ({ setUser }: LoginFormType) => {
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
-  //   const [loading, setLoading] = useState<boolean>(false);
-  //   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   const login = async (formData: FormData) => {
     const firstName = formData.get("firstName") || "";
@@ -19,7 +20,7 @@ const LoginForm = ({ setCookie }: LoginFormType) => {
     const email = formData.get("email") || "";
 
     try {
-      //   setLoading(true);
+      setLoading(true);
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/login`,
         {
@@ -31,31 +32,32 @@ const LoginForm = ({ setCookie }: LoginFormType) => {
           headers: {
             "Content-Type": "application/json",
           },
-          credentials: "include",
         },
       );
-
-      console.log(response);
 
       if (!response.ok) {
         throw new Error("Network Response Failed");
       }
 
-      const fetchAccessToken = response.headers
-        .getSetCookie()
-        .find((cookie) => cookie.includes("fetch-access-token"));
-
-      console.log(fetchAccessToken);
-
-      setCookie(fetchAccessToken || null);
+      setUser({
+        firstName,
+        lastName,
+        email,
+      });
     } catch (error) {
       if (error instanceof Error) {
-        // setError(error.message);
+        setError(error.message);
       }
     } finally {
-      //   setLoading(false);
+      setLoading(false);
     }
   };
+
+  if (loading) {
+    <div>Loading...</div>;
+  }
+
+  if (error) <div>Error: {error}</div>;
 
   return (
     <form action={login}>
