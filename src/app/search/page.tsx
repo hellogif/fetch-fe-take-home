@@ -1,44 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import DogCard from "@/components/DogCard";
+import useGetDogs from "@/hooks/useGetDogs";
 
 const SearchPage: React.FC = () => {
-  const [dogIds, setDogIds] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const getDogIds = async () => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_API_URL}/dogs/search`,
-          {
-            method: "GET",
-            credentials: "include",
-          },
-        );
-
-        if (!response.ok) {
-          throw new Error("Network Request Failed");
-        }
-
-        const data = await response.json();
-
-        setDogIds(data.resultIds);
-      } catch (error) {
-        if (error instanceof Error) {
-          setError(error.message);
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getDogIds();
-  }, []);
+  const { dogs, loading, error } = useGetDogs();
+  console.log(dogs);
 
   if (loading) <div>Loading...</div>;
 
@@ -46,8 +13,10 @@ const SearchPage: React.FC = () => {
 
   return (
     <div>
-      {dogIds.map((id) => (
-        <div key={id}>{id}</div>
+      {dogs.map((dog) => (
+        <div key={dog.id}>
+          <DogCard dog={dog} />
+        </div>
       ))}
     </div>
   );
