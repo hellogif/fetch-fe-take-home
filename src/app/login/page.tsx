@@ -1,38 +1,38 @@
 "use client";
 
-import { Dispatch, SetStateAction, useState } from "react";
-import { UserContextType } from "../page";
+import { useState } from "react";
 import styles from "./styles.module.scss";
+import { useRouter } from "next/navigation";
+import { useUser } from "@/contexts/UserContext";
 
-interface LoginFormType {
-  setUser: Dispatch<SetStateAction<UserContextType>>;
-}
-
-const LoginForm = ({ setUser }: LoginFormType) => {
-  const [firstName, setFirstName] = useState<string>("");
-  const [lastName, setLastName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
+const LoginPage: React.FC = () => {
+  const router = useRouter();
+  const { setUser } = useUser();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const login = async (formData: FormData) => {
-    const firstName = formData.get("firstName") || "";
-    const lastName = formData.get("lastName") || "";
-    const email = formData.get("email") || "";
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    const firstName = formData.get("firstName")?.toString() || "";
+    const lastName = formData.get("lastName")?.toString() || "";
+    const email = formData.get("email")?.toString() || "";
 
     try {
       setLoading(true);
+
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/login`,
         {
           method: "POST",
           body: JSON.stringify({
             name: `${firstName} ${lastName}`,
-            email,
+            email: email,
           }),
           headers: {
             "Content-Type": "application/json",
           },
+          credentials: "include",
         },
       );
 
@@ -40,11 +40,9 @@ const LoginForm = ({ setUser }: LoginFormType) => {
         throw new Error("Network Response Failed");
       }
 
-      setUser({
-        firstName,
-        lastName,
-        email,
-      });
+      setUser({ firstName, lastName, email });
+
+      router.push("/search");
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);
@@ -61,7 +59,7 @@ const LoginForm = ({ setUser }: LoginFormType) => {
   if (error) <div>Error: {error}</div>;
 
   return (
-    <form action={login} className={styles.form}>
+    <form onSubmit={handleSubmit} className={styles.form}>
       <label htmlFor="firstName" className={styles.label}>
         First Name
         <input
@@ -69,8 +67,6 @@ const LoginForm = ({ setUser }: LoginFormType) => {
           name="firstName"
           className={styles.input}
           type="text"
-          value={firstName}
-          onChange={(evt) => setFirstName(evt.target.value)}
         />
       </label>
 
@@ -81,21 +77,12 @@ const LoginForm = ({ setUser }: LoginFormType) => {
           name="lastName"
           className={styles.input}
           type="text"
-          value={lastName}
-          onChange={(evt) => setLastName(evt.target.value)}
         />
       </label>
 
       <label htmlFor="email" className={styles.label}>
         Email
-        <input
-          id="email"
-          name="email"
-          className={styles.input}
-          type="email"
-          value={email}
-          onChange={(evt) => setEmail(evt.target.value)}
-        />
+        <input id="email" name="email" className={styles.input} type="email" />
       </label>
 
       <button type="submit" className={styles.button}>
@@ -105,4 +92,4 @@ const LoginForm = ({ setUser }: LoginFormType) => {
   );
 };
 
-export default LoginForm;
+export default LoginPage;
