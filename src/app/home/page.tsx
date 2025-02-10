@@ -1,3 +1,5 @@
+"use client";
+
 import { useUser } from "@/contexts/UserContext";
 import SearchPage from "../search/page";
 import LoginPage from "../login/page";
@@ -5,6 +7,7 @@ import LoginPage from "../login/page";
 const Home: React.FC = () => {
   const { user } = useUser();
   const loggedInUser = user?.firstName && user?.lastName && user?.email;
+  console.log(user);
 
   return <div>{loggedInUser ? <SearchPage /> : <LoginPage />}</div>;
 };

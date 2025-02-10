@@ -1,55 +1,18 @@
 "use client";
 
-import { useState } from "react";
 import styles from "./styles.module.scss";
-import { useRouter } from "next/navigation";
-import { useUser } from "@/contexts/UserContext";
+import useLogin from "@/hooks/useLogin";
 
 const LoginPage: React.FC = () => {
-  const router = useRouter();
-  const { setUser } = useUser();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  // const [loading, setLoading] = useState<boolean>(false);
+  // const [error, setError] = useState<string | null>(null);
+  const { login, loading, error } = useLogin();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
-    const firstName = formData.get("firstName")?.toString() || "";
-    const lastName = formData.get("lastName")?.toString() || "";
-    const email = formData.get("email")?.toString() || "";
 
-    try {
-      setLoading(true);
-
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/login`,
-        {
-          method: "POST",
-          body: JSON.stringify({
-            name: `${firstName} ${lastName}`,
-            email: email,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error("Network Response Failed");
-      }
-
-      setUser({ firstName, lastName, email });
-
-      router.push("/search");
-    } catch (error) {
-      if (error instanceof Error) {
-        setError(error.message);
-      }
-    } finally {
-      setLoading(false);
-    }
+    login(formData);
   };
 
   if (loading) {

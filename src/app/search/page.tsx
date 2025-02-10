@@ -1,11 +1,8 @@
 "use client";
 
-import { useUser } from "@/contexts/UserContext";
 import { useEffect, useState } from "react";
 
 const SearchPage: React.FC = () => {
-  const user = useUser();
-  console.log("user in search", user.user);
   const [dogIds, setDogIds] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

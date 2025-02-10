@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useContext, useEffect, useState } from "react";
 
 interface UserType {
@@ -18,10 +20,14 @@ interface UserProviderProps {
 }
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<UserType | null>(() => {
+  const [user, setUser] = useState<UserType | null>(null);
+
+  useEffect(() => {
     const currUser = localStorage.getItem("user");
-    return currUser ? JSON.parse(currUser) : null;
-  });
+    if (currUser) {
+      setUser(JSON.parse(currUser));
+    }
+  }, []);
 
   useEffect(() => {
     if (user) {
