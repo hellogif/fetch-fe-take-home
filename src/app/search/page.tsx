@@ -5,7 +5,6 @@ import useGetDogs from "@/hooks/useGetDogs";
 
 const SearchPage: React.FC = () => {
   const { dogs, loading, error } = useGetDogs();
-  console.log(dogs);
 
   if (loading) <div>Loading...</div>;
 
