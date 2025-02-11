@@ -21,21 +21,30 @@ interface UserProviderProps {
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [user, setUser] = useState<UserType | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
+    setLoading(true);
     const currUser = localStorage.getItem("user");
     if (currUser) {
       setUser(JSON.parse(currUser));
     }
+    setLoading(false);
   }, []);
 
   useEffect(() => {
+    setLoading(true);
     if (user) {
       localStorage.setItem("user", JSON.stringify(user));
     } else {
       localStorage.removeItem("user");
     }
+    setLoading(false);
   }, [user]);
+
+  if (loading) {
+    return null;
+  }
 
   return (
     <UserContext.Provider value={{ user, setUser }}>
