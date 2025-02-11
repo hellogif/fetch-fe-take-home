@@ -1,6 +1,6 @@
 "use client";
 
-import DogCard from "@/components/DogCard";
+import DogCard from "@/components/DogCard/DogCard";
 import useGetDogs from "@/hooks/useGetDogs";
 
 const SearchPage: React.FC = () => {
@@ -13,11 +13,18 @@ const SearchPage: React.FC = () => {
 
   return (
     <div>
-      {dogs.map((dog) => (
-        <div key={dog.id}>
-          <DogCard dog={dog} />
-        </div>
-      ))}
+      <div>
+        <div>Search</div>
+        <div>Filters</div>
+      </div>
+      <div>
+        Dog Cards
+        {dogs.map((dog) => (
+          <div key={dog.id}>
+            <DogCard dog={dog} />
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
