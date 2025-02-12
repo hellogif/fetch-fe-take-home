@@ -4,38 +4,47 @@ import { useState } from "react";
 import { useUser } from "@/contexts/UserContext";
 import styles from "./Header.module.scss";
 import Link from "next/link";
+import { Avatar, HStack, Box } from "@chakra-ui/react";
 
 const Header = () => {
   const { user, setUser } = useUser();
-  const firstName = user?.firstName;
-  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  //TODO: Make user load before this page renders
   return (
     <div className={styles.header}>
       <h1>Adopt A Dog</h1>
-      {user?.firstName ? (
+      {user ? (
         <div>
           <button
             className={styles.dropdownButton}
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           >
-            {firstName}
+            <HStack>
+              <Avatar.Icon
+                name={`${user.firstName} ${user.lastName}`}
+                // size="sm"
+              />
+              <Box>{user.firstName}</Box>
+            </HStack>
           </button>
-          {isDropdownOpen ? (
+          {isDropdownOpen && (
             <div className={styles.dropdownContent}>
-              <a className={styles.dropdownLink} href="/dashboard">
+              <Link className={styles.dropdownLink} href="/dashboard">
                 Dashboard
-              </a>
-              <button onClick={() => setUser(null)}>
-                <Link className={styles.dropdownLink} href="/">
-                  Logout
-                </Link>
-              </button>
+              </Link>
+              <Link
+                onClick={() => setUser(null)}
+                className={styles.dropdownLink}
+                href="/"
+              >
+                Logout
+              </Link>
             </div>
-          ) : null}
+          )}
         </div>
-      ) : null}
+      ) : (
+        <Link href="/login">Login</Link>
+      )}
     </div>
   );
 };

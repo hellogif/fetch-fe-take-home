@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 
 interface UserType {
   firstName: string;
@@ -13,38 +13,29 @@ interface UserContextType {
   setUser: (user: UserType | null) => void;
 }
 
-const UserContext = React.createContext<UserContextType | undefined>(undefined);
+const UserContext = createContext<UserContextType | undefined>(undefined);
 
-interface UserProviderProps {
-  children: React.ReactNode;
-}
-
-export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
+export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [user, setUser] = useState<UserType | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
 
+  // Load the user from localStorage on initial render
   useEffect(() => {
-    setLoading(true);
-    const currUser = localStorage.getItem("user");
-    if (currUser) {
-      setUser(JSON.parse(currUser));
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
     }
-    setLoading(false);
   }, []);
 
+  // Sync user with localStorage when it changes
   useEffect(() => {
-    setLoading(true);
     if (user) {
       localStorage.setItem("user", JSON.stringify(user));
     } else {
       localStorage.removeItem("user");
     }
-    setLoading(false);
   }, [user]);
-
-  if (loading) {
-    return null;
-  }
 
   return (
     <UserContext.Provider value={{ user, setUser }}>

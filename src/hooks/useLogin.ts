@@ -36,6 +36,7 @@ const useLogin = () => {
       }
 
       setUser({ firstName, lastName, email });
+      await Promise.resolve();
 
       router.push("/search");
     } catch (error) {
